@@ -1,10 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
-import PhysicsSketch from './physicsEngine';
+import "./App.css";
+import PhysicsSketch from "./physicsEngine";
 
 function App() {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+    <div
+      style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
+    >
       <PhysicsSketch />
     </div>
   );

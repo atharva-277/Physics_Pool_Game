@@ -1,5 +1,45 @@
-canvas {
-  display: block;
-  width: 600px !important;
-  height: 400px !important;
+.app {
+  min-height: 100vh;
+  width: 100%;
+  padding: 40px 24px;
+}
+
+.app-header {
+  max-width: 1000px;
+  margin: 0 auto 36px;
+}
+
+.app-header h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.app-header p {
+  color: #777;
+  font-size: 1rem;
+}
+
+.simulation-section {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.simulation-header {
+  margin-bottom: 18px;
+}
+
+.simulation-header h2 {
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+}
+
+.simulation-header p {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.physics-container {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
 }

@@ -13,7 +13,7 @@ const PhysicsSketch = () => {
       const height = 560;
 
       const TABLE = {
-        rail: 56,
+        rail: 38,
         middleX: width / 2,
         middleY: height / 2,
         pocketRadius: 27,
@@ -47,8 +47,8 @@ const PhysicsSketch = () => {
         engine = Matter.Engine.create();
         world = engine.world;
 
-        engine.world.gravity.x = 0;
-        engine.world.gravity.y = 0;
+        engine.gravity.x = 0;
+        engine.gravity.y = 0;
 
         engine.positionIterations = 8;
         engine.velocityIterations = 6;
@@ -65,85 +65,88 @@ const PhysicsSketch = () => {
       }
 
       function createTable() {
-        const r = TABLE.rail;
-        const middleX = TABLE.middleX;
-        const middleY = TABLE.middleY;
+        const feltLeft = 34;
+        const feltRight = width - 34; // 866
+        const feltTop = 34;
+        const feltBottom = height - 34; // 526
 
-        const wallThickness = 14;
+        const middleX = TABLE.middleX; // 450
+        const wallThickness = 40;
+        const halfThickness = wallThickness / 2;
         const cornerGap = 30;
         const middleGap = 30;
+
+        // 1. Top-Left Rail (Bottom edge sits exactly at y = feltTop)
+        const topLeftStartX = feltLeft + cornerGap;
+        const topLeftEndX = middleX - middleGap / 2;
         createWall(
-          (r + cornerGap + middleX - middleGap) / 2,
-          r,
-          middleX - middleGap - r - cornerGap,
+          (topLeftStartX + topLeftEndX) / 2,
+          feltTop - halfThickness,
+          topLeftEndX - topLeftStartX,
           wallThickness,
         );
 
+        // 2. Top-Right Rail (Bottom edge sits exactly at y = feltTop)
+        const topRightStartX = middleX + middleGap / 2;
+        const topRightEndX = feltRight - cornerGap;
         createWall(
-          (middleX + middleGap + width - r - cornerGap) / 2,
-          r,
-          width - r - cornerGap - middleX - middleGap,
+          (topRightStartX + topRightEndX) / 2,
+          feltTop - halfThickness,
+          topRightEndX - topRightStartX,
           wallThickness,
         );
 
+        // 3. Bottom-Left Rail (Top edge sits exactly at y = feltBottom)
         createWall(
-          (r + cornerGap + middleX - middleGap) / 2,
-          height - r,
-          middleX - middleGap - r - cornerGap,
+          (topLeftStartX + topLeftEndX) / 2,
+          feltBottom + halfThickness,
+          topLeftEndX - topLeftStartX,
           wallThickness,
         );
 
+        // 4. Bottom-Right Rail (Top edge sits exactly at y = feltBottom)
         createWall(
-          (middleX + middleGap + width - r - cornerGap) / 2,
-          height - r,
-          width - r - cornerGap - middleX - middleGap,
+          (topRightStartX + topRightEndX) / 2,
+          feltBottom + halfThickness,
+          topRightEndX - topRightStartX,
           wallThickness,
         );
 
+        // 5. Left Rail (Right edge sits exactly at x = feltLeft)
+        const leftStartY = feltTop + cornerGap;
+        const leftEndY = feltBottom - cornerGap;
         createWall(
-          r,
-          (r + cornerGap + middleY - middleGap) / 2,
+          feltLeft - halfThickness,
+          (leftStartY + leftEndY) / 2,
           wallThickness,
-          middleY - middleGap - r - cornerGap,
+          leftEndY - leftStartY,
         );
 
+        // 6. Right Rail (Left edge sits exactly at x = feltRight)
         createWall(
-          r,
-          (middleY + middleGap + height - r - cornerGap) / 2,
+          feltRight + halfThickness,
+          (leftStartY + leftEndY) / 2,
           wallThickness,
-          height - r - cornerGap - middleY - middleGap,
-        );
-
-        createWall(
-          width - r,
-          (r + cornerGap + middleY - middleGap) / 2,
-          wallThickness,
-          middleY - middleGap - r - cornerGap,
-        );
-
-        createWall(
-          width - r,
-          (middleY + middleGap + height - r - cornerGap) / 2,
-          wallThickness,
-          height - r - cornerGap - middleY - middleGap,
+          leftEndY - leftStartY,
         );
 
         createPockets();
       }
 
       function createPockets() {
-        const r = TABLE.rail;
+        const feltLeft = 34;
+        const feltRight = width - 34;
+        const feltTop = 34;
+        const feltBottom = height - 34;
         const midX = TABLE.middleX;
-        const midY = TABLE.middleY;
 
         const positions = [
-          { x: r, y: r },
-          { x: midX, y: r },
-          { x: width - r, y: r },
-
-          { x: r, y: height - r },
-          { x: midX, y: height - r },
-          { x: width - r, y: height - r },
+          { x: feltLeft, y: feltTop }, // Top-Left corner
+          { x: midX, y: feltTop }, // Top-Middle
+          { x: feltRight, y: feltTop }, // Top-Right corner
+          { x: feltLeft, y: feltBottom }, // Bottom-Left corner
+          { x: midX, y: feltBottom }, // Bottom-Middle
+          { x: feltRight, y: feltBottom }, // Bottom-Right corner
         ];
 
         positions.forEach((position) => {
@@ -159,7 +162,6 @@ const PhysicsSketch = () => {
           );
 
           pocket.isPocket = true;
-
           pockets.push(pocket);
         });
 
@@ -372,11 +374,11 @@ const PhysicsSketch = () => {
           dy *= scale;
         }
 
-        const forceScale = 0.005;
+        const speedScale = 0.15;
 
-        Matter.Body.applyForce(selectedBall, selectedBall.position, {
-          x: dx * forceScale,
-          y: dy * forceScale,
+        Matter.Body.setVelocity(selectedBall, {
+          x: dx * speedScale,
+          y: dy * speedScale,
         });
 
         selectedBall = null;
